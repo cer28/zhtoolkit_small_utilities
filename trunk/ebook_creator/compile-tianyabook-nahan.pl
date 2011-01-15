@@ -50,7 +50,7 @@ while (-e sprintf("%03d.htm", $file_ct)) {
     # This is the chapter heading
     $found = &scan_to_tag($tp, 'b');
     my $title = $tp->get_text;    # chapter title
-    $title =~ s/[\x{2474}-\x{2482}]/'(' . (ord($&) - 9331) . ')'/ge;   # Tjese are "Parenthesized Digit". They are unprintable squares on Kindle. Convert to (x)
+    $title =~ s/[\x{2474}-\x{2482}]/'(' . (ord($&) - 9331) . ')'/ge;   # These are "Parenthesized Digit". They are unprintable squares on Kindle. Convert to (x)
     $title =~ s/[\x{2460}-\x{2469}]/'(' . (ord($&) - 9311) . ')'/ge;   # These are "Circled Digit" numbers. They are unprintable squares on Kindle. Convert to (x)
 
     print OUT $title, "\n", '-' x 20, "\n";  # Add underline under chapter title.
@@ -71,7 +71,7 @@ while (-e sprintf("%03d.htm", $file_ct)) {
             my $text = $token->[1];
 
             $text =~ s/\x{25a1}//; # Before the "zhushi" annotations, sometimes there is a white square in the original text. Just clean it out
-            $text =~ s/[\x{2474}-\x{2482}]/'(' . (ord($&) - 9331) . ')'/ge;   # Tjese are "Parenthesized Digit". They are unprintable squares on Kindle. Convert to (x)
+            $text =~ s/[\x{2474}-\x{2482}]/'(' . (ord($&) - 9331) . ')'/ge;   # These are "Parenthesized Digit". They are unprintable squares on Kindle. Convert to (x)
             $text =~ s/[\x{2460}-\x{2469}]/'(' . (ord($&) - 9311) . ')'/ge;   # These are "Circled Digit" numbers. They are unprintable squares on Kindle. Convert to (x)
 
             # There are also \x{3000} "Ideographic space" (i.e. fullwidth space) chars to do the indenting and come centering.
