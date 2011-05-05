@@ -23,7 +23,7 @@
 #
 # @author Chad Redman
 # @since 2011-05-04
-# @link xxxxxxxxxxxx Source	
+# @link http://svn.zhtoolkit.com/small_utilities/trunk/transcriber_export_plugins/audacity_labels.tcl Source	
 # @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (see COPYING file)
 ##
 ################################################################
