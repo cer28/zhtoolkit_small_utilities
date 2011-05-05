@@ -10,7 +10,7 @@ steps in the process are as follows.
 Step 1
 ------
 Download the plugin files anki_audio_cards.tcl and audacity_labels.tcl, and
-put them into the lib\transcriber1.5\convert\ sub directory of the Transcriber
+put them into the lib\transcriber1.5\convert\ subdirectory of the Transcriber
 program location. If Transcriber is running, you will need to restart it for
 the plugins to take effect.
 
