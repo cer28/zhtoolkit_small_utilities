@@ -17,7 +17,8 @@ create temporary table tmp_freq as
 SELECT characters, COUNT('x') AS raw_ct, NULL
     FROM words
    WHERE token_type = 'w'
-     AND characters REGEXP '^[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{00b7}]+$'
+     --AND characters REGEXP '^[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{00b7}]+$'
+     AND is_cjk = 'Y'
    GROUP BY characters ORDER BY count('x') DESC, characters ASC
 ;
 
@@ -36,7 +37,8 @@ ALTER TABLE texts ADD COLUMN ch_word_ct  INTEGER;
 UPDATE texts SET ch_word_ct = (
 SELECT COUNT(characters) FROM words
 WHERE token_type = 'w'
-  AND characters REGEXP '^[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{00b7}]+$'
+  --AND characters REGEXP '^[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{00b7}]+$'
+  AND is_cjk = 'Y'
   AND text_id = texts.id
 GROUP BY text_id
 );
