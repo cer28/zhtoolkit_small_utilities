@@ -15,9 +15,9 @@
 # that ParserDetails.ini exists (see README for details)
 
 
-my $corpattern = 'G:/Home/Chinese/corpora/LCMC/distro/2474/2474/Lcmc/data/character/LCMC_?.XML';
-my $corpattern_pinyin = 'G:/Home/Chinese/corpora/LCMC/distro/2474/2474/Lcmc/data/pinyin/LCMC_?.XML';
-my $refpattern = 'G:/Home/Chinese/corpora/LCMC/distro/2474/2474/Lcmc/manual/KAT_?.HTM';
+my $corpattern = './2474/2474/Lcmc/data/character/LCMC_?.XML';
+my $corpattern_pinyin = './2474/2474/Lcmc/data/pinyin/LCMC_?.XML';
+my $refpattern = './2474/2474/Lcmc/manual/KAT_?.HTM';
 my $dbname = 'lcmc.db3';
 my $infile_pos = './pos-extracted.txt.U8';
 my $sql_create = 'create_db.sql';
