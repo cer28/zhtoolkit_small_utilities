@@ -46,7 +46,7 @@ b) File->Export->Export to Audacity Labels...
 Step 4
 ------
 Open the original file in Audacity (Transcriber does not need to be closed).
-Then, select Project->Import Labels and choose your previously export labels
+Then, select Project->Import Labels and choose your previously exported labels
 file. The result should be a new label track with named flags. These flags
 should be in the same locations as the original Transcriber segments; i.e.,
 the times shouldn't be cutting the middle of a sentence anywhere.
