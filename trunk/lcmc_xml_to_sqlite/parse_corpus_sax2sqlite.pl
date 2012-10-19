@@ -109,10 +109,10 @@ sub end_element {
         $ct_word = 0;
     }
     elsif ($el->{Name} eq 'w' or $el->{Name} eq 'c') {
-        push @{$self->{content}{words}}, [$current_textid, $current_fileid, $current_sentence_id, $ct_word, $buf_word, $current_speech, $el->{Name}, $ct_para, $running_word_idx];
+        push @{$self->{content}{words}}, [$current_textid, $current_fileid, $current_sentence_id, $ct_word, $buf_word, $current_speech, $el->{Name}, $ct_para, $running_word_idx, $self->isCJK($buf_word)];
         my @chars = split(//, $buf_word);
         for (my $i = 0; $i < @chars; ++$i) {
-            push @{$self->{content}{characters}}, [$current_textid, $current_fileid, $current_sentence_id, $ct_word, $i+1, $chars[$i], $el->{Name}];
+            push @{$self->{content}{characters}}, [$current_textid, $current_fileid, $current_sentence_id, $ct_word, $i+1, $chars[$i], $el->{Name}, $self->isCJK($chars[$i])];
         }
         $sentence_full .= $buf_word;
         $running_word_idx += length($buf_word);
@@ -127,6 +127,12 @@ sub characters {
     if ($current_element =~ /^(c|w)$/) {
         $buf_word .= $chars->{Data};
     }
+}
+
+
+sub isCJK {
+    my ($self, $chars) = @_;
+    return ($chars =~ /^[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{00b7}]+$/) ? 'Y' : 'N';
 }
 
 
@@ -216,10 +222,10 @@ sub end_element {
         $ct_word = 0;
     }
     elsif ($el->{Name} eq 'w' or $el->{Name} eq 'c') {
-        push @{$self->{content}{pinyin_words}}, [$current_textid, $current_fileid, $current_sentence_id, $ct_word, $buf_word, $current_speech, $el->{Name}, $ct_para, $running_word_idx];
+        push @{$self->{content}{pinyin_words}}, [$current_textid, $current_fileid, $current_sentence_id, $ct_word, $buf_word, $current_speech, $el->{Name}, $ct_para, $running_word_idx, $self->isCJK($buf_word)];
         my @chars = $buf_word =~ /([a-z]+[1-5]|\x{b7})/g;
         for (my $i = 0; $i < @chars; ++$i) {
-            push @{$self->{content}{pinyin_characters}}, [$current_textid, $current_fileid, $current_sentence_id, $ct_word, $i+1, $chars[$i], $el->{Name}];
+            push @{$self->{content}{pinyin_characters}}, [$current_textid, $current_fileid, $current_sentence_id, $ct_word, $i+1, $chars[$i], $el->{Name}, $self->isCJK($chars[$i])];
         }
         
         #if ($el->{Name} eq 'w' and $buf_word =~ /^([a-z]+[1-5])+$/) {
@@ -241,6 +247,12 @@ sub characters {
     if ($current_element =~ /^(c|w)$/) {
         $buf_word .= $chars->{Data};
     }
+}
+
+
+sub isCJK {
+    my ($self, $chars) = @_;
+    return ($chars =~ /^([a-z]+[1-5]|\x{b7})+$/) ? 'Y' : 'N';
 }
 
 
@@ -554,13 +566,13 @@ sub write_object {
     my %sql = (
         texts => '?, ?',
         files => '?, ?, ?',
-        words => '?, ?, ?, ?, ?, ?, ?, ?, ?',
+        words => '?, ?, ?, ?, ?, ?, ?, ?, ?, ?',
         full_sentences => '?, ?, ?, ?, ?',
-        characters => '?, ?, ?, ?, ?, ?, ?',
+        characters => '?, ?, ?, ?, ?, ?, ?, ?',
         pos => '?, ?',
-        pinyin_words => '?, ?, ?, ?, ?, ?, ?, ?, ?',
+        pinyin_words => '?, ?, ?, ?, ?, ?, ?, ?, ?, ?',
         pinyin_full_sentences => '?, ?, ?, ?, ?',
-        pinyin_characters => '?, ?, ?, ?, ?, ?, ?',
+        pinyin_characters => '?, ?, ?, ?, ?, ?, ?, ?',
         
     );
         
