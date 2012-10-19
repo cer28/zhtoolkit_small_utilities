@@ -5,6 +5,8 @@ CREATE TABLE frequencies (
     characters  NVARCHAR(10),
     raw_ct      INTEGER,
     freq_per_million NUMBER,
+    CONSTRAINT pk_frequencies PRIMARY KEY (rank),
+    CONSTRAINT uq_frequencies_characters UNIQUE (characters),
     CONSTRAINT fk_words_02 FOREIGN KEY (characters) REFERENCES words(characters)
 );
 

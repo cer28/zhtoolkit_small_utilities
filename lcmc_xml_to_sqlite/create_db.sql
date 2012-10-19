@@ -38,7 +38,8 @@ CREATE TABLE words (
     part_of_speech   VARCHAR(4),  /* should be 2, but there are 6 records with extra whitespace: select * from words where length(part_of_speech) > 2 */
     token_type       CHAR(1),
     paragraph_num    INTEGER,
-    running_idx    INTEGER,
+    running_idx      INTEGER,
+    is_cjk           VARCHAR(1)  NOT NULL DEFAULT 'N',
     CONSTRAINT pk_words PRIMARY KEY (text_id, file_id, sentence_id, word_num),
     CONSTRAINT fk_texts02 FOREIGN KEY (text_id) REFERENCES texts(id),
     CONSTRAINT fk_files01 FOREIGN KEY (file_id) REFERENCES files(id)
@@ -66,6 +67,7 @@ CREATE TABLE characters (
     char_num         INTEGER,
     character        NVARCHAR(2),   /* this should always be 1 */
     token_type       CHAR(1),
+    is_cjk           VARCHAR(1)  NOT NULL DEFAULT 'N',
     CONSTRAINT pk_characters PRIMARY KEY (text_id, file_id, sentence_id, word_num, char_num),
     CONSTRAINT fk_words01 FOREIGN KEY (text_id, file_id, sentence_id, word_num) REFERENCES words(text_id, file_id, sentence_id, word_num)
 );
@@ -80,7 +82,8 @@ CREATE TABLE pinyin_words (
     part_of_speech   VARCHAR(4),  /* should be 2, but there are 6 records with extra whitespace: select * from words where length(part_of_speech) > 2 */
     token_type       CHAR(1),
     paragraph_num    INTEGER,
-    running_idx    INTEGER,
+    running_idx      INTEGER,
+    is_cjk           VARCHAR(1)  NOT NULL DEFAULT 'N',
     CONSTRAINT pk_pinyin_words PRIMARY KEY (text_id, file_id, sentence_id, word_num),
     CONSTRAINT fk_texts04 FOREIGN KEY (text_id) REFERENCES texts(id),
     CONSTRAINT fk_files03 FOREIGN KEY (file_id) REFERENCES files(id)
@@ -107,6 +110,7 @@ CREATE TABLE pinyin_characters (
     char_num         INTEGER,
     character        NVARCHAR(7),   /* this should always be 1 */
     token_type       CHAR(1),
+    is_cjk           VARCHAR(1)  NOT NULL DEFAULT 'N',
     CONSTRAINT pk_pinyin_characters PRIMARY KEY (text_id, file_id, sentence_id, word_num, char_num),
     CONSTRAINT fk_pinyin_words01 FOREIGN KEY (text_id, file_id, sentence_id, word_num) REFERENCES pinyin_words(text_id, file_id, sentence_id, word_num)
 );
