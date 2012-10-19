@@ -22,6 +22,13 @@ CREATE TABLE files (
 );
 
 
+CREATE TABLE pos (
+    id  VARCHAR(2) NOT NULL,
+    description  VARCHAR2(40),
+    CONSTRAINT pk_pos PRIMARY KEY (id)
+);
+
+
 CREATE TABLE words (
     text_id          VARCHAR(2) NOT NULL,
     file_id          VARCHAR(3) NOT NULL,
@@ -35,6 +42,7 @@ CREATE TABLE words (
     CONSTRAINT pk_words PRIMARY KEY (text_id, file_id, sentence_id, word_num),
     CONSTRAINT fk_texts02 FOREIGN KEY (text_id) REFERENCES texts(id),
     CONSTRAINT fk_files01 FOREIGN KEY (file_id) REFERENCES files(id)
+    CONSTRAINT fk_pos01 FOREIGN KEY (part_of_speech) REFERENCES pos(id)
 );
 
 
@@ -62,12 +70,6 @@ CREATE TABLE characters (
     CONSTRAINT fk_words01 FOREIGN KEY (text_id, file_id, sentence_id, word_num) REFERENCES words(text_id, file_id, sentence_id, word_num)
 );
 
-CREATE TABLE pos (
-    id  VARCHAR(2) NOT NULL,
-    description  VARCHAR2(40),
-    CONSTRAINT pk_pos PRIMARY KEY (id)
-);
-
 
 CREATE TABLE pinyin_words (
     text_id          VARCHAR(2) NOT NULL,
@@ -79,9 +81,9 @@ CREATE TABLE pinyin_words (
     token_type       CHAR(1),
     paragraph_num    INTEGER,
     running_idx    INTEGER,
-    CONSTRAINT pk_words PRIMARY KEY (text_id, file_id, sentence_id, word_num),
-    CONSTRAINT fk_texts02 FOREIGN KEY (text_id) REFERENCES texts(id),
-    CONSTRAINT fk_files01 FOREIGN KEY (file_id) REFERENCES files(id)
+    CONSTRAINT pk_pinyin_words PRIMARY KEY (text_id, file_id, sentence_id, word_num),
+    CONSTRAINT fk_texts04 FOREIGN KEY (text_id) REFERENCES texts(id),
+    CONSTRAINT fk_files03 FOREIGN KEY (file_id) REFERENCES files(id)
 );
 
 
@@ -91,9 +93,9 @@ CREATE TABLE pinyin_full_sentences (
     sentence_id      VARCHAR(5) NOT NULL,
     paragraph_num    INTEGER,
     characters       NVARCHAR(2200),
-    CONSTRAINT pk_full_sentences PRIMARY KEY (text_id, file_id, sentence_id),
-    CONSTRAINT fk_texts03 FOREIGN KEY (text_id) REFERENCES texts(id),
-    CONSTRAINT fk_files02 FOREIGN KEY (file_id) REFERENCES files(id)
+    CONSTRAINT pk_pinyin_full_sentences PRIMARY KEY (text_id, file_id, sentence_id),
+    CONSTRAINT fk_texts05 FOREIGN KEY (text_id) REFERENCES texts(id),
+    CONSTRAINT fk_files04 FOREIGN KEY (file_id) REFERENCES files(id)
 );
 
 
@@ -105,6 +107,6 @@ CREATE TABLE pinyin_characters (
     char_num         INTEGER,
     character        NVARCHAR(7),   /* this should always be 1 */
     token_type       CHAR(1),
-    CONSTRAINT pk_characters PRIMARY KEY (text_id, file_id, sentence_id, word_num, char_num),
-    CONSTRAINT fk_words01 FOREIGN KEY (text_id, file_id, sentence_id, word_num) REFERENCES words(text_id, file_id, sentence_id, word_num)
+    CONSTRAINT pk_pinyin_characters PRIMARY KEY (text_id, file_id, sentence_id, word_num, char_num),
+    CONSTRAINT fk_pinyin_words01 FOREIGN KEY (text_id, file_id, sentence_id, word_num) REFERENCES pinyin_words(text_id, file_id, sentence_id, word_num)
 );
