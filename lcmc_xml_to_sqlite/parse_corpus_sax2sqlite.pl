@@ -16,7 +16,7 @@
 
 
 my $corpattern = './2474/2474/Lcmc/data/character/LCMC_?.XML';
-my $corpattern_pinyin = './2474/2474/Lcmc/data/pinyin/LCMC_?.XML';
+my $corpattern_pinyin = './2474/2474/Lcmc/data/pinyin/LCMC_?.xml';
 my $refpattern = './2474/2474/Lcmc/manual/KAT_?.HTM';
 my $dbname = 'lcmc.db3';
 my $infile_pos = './pos-extracted.txt.U8';
