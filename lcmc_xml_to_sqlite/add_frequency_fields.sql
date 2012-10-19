@@ -4,7 +4,8 @@ CREATE TABLE frequencies (
     rank        INTEGER,
     characters  NVARCHAR(10),
     raw_ct      INTEGER,
-    freq_per_million NUMBER
+    freq_per_million NUMBER,
+    CONSTRAINT fk_words_02 FOREIGN KEY (characters) REFERENCES words(characters)
 );
 
 DROP TABLE IF EXISTS tmp_freq;
