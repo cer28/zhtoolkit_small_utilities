@@ -134,7 +134,7 @@ If SQLite3 is not installed,
 For graphical applications, there are a few solutions, but none which include
 a regular expression feature. SQLite Database Browser looks promising in
 screenshots, but it doesn't work well with a database this large, as it tries
-to load it all into memory. The other options are SQLite Manager (a Firefox
+to load it all into memory. Instead, the other options are SQLite Manager (a Firefox
 plugin) and Sqliteman.
 
 
@@ -144,16 +144,14 @@ Windows
 I highly recommend SQLiteSpy [http://www.yunqa.de/delphi/doku.php] as a
 graphical interface to SQLite3 databases. It is surprisingly fast, even with
 very large databases such as this. It also includes built-in regular
-expression support, which allows for more powerful queries of the corpus data
-(see next section for examples).
+expression support, which allows for more powerful queries of the corpus data.
 
 
 3) (optional) Adding frequency data to the database
 
 The SQL script file add_frequency_fields.sql is a set of statements to add some
 information on word frequencies to the database. It isn't included in the main
-script because it relies on regular expressions to determine what is a Chinese
-word, and would fail under some operating systems or software configurations.
+script, but is still a near-essential supplement to the rest of the data.
 
 Executing the statements in add_frequency_fields.sql will add the following to
 the database:
@@ -169,14 +167,15 @@ the database:
 HAVE FUN!
 =========
 
-A) Raw frequency counts of all Chinese words in the corpus (requires regexp)
+A) Raw frequency counts of all Chinese words in the corpus
 
 SELECT characters, COUNT('x')
   FROM words
  WHERE token_type = 'w'
-   AND characters REGEXP '^[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{00b7}]+$'
-   /* or regexp '^[\p{InCJK_Unified_Ideographs_Extension_A}\p{InCJK_Unified_Ideographs}\p{InCJK_Compatibility_Ideographs}\x{b7}]+$' */
-   /* or regexp '^\p{Han}+$' but this will include fullwidth numbers and letters */
+   AND is_cjk = 'Y'
+   /* or: AND characters REGEXP '^[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{00b7}]+$'
+   /* or: AND characters regexp '^[\p{InCJK_Unified_Ideographs_Extension_A}\p{InCJK_Unified_Ideographs}\p{InCJK_Compatibility_Ideographs}\x{b7}]+$' */
+   /* or: AND characters regexp '^\p{Han}+$' but this will include fullwidth numbers and letters */
  GROUP BY characters ORDER BY count('x') DESC, characters ASC;
 
 
@@ -204,15 +203,15 @@ Regexp Support in Linux
 ------------------------
 
 Regular expression support is not essential to do many SQL queries, but it is
-highly useful, especially when working with corpus data. One crucial use is in
-filtering out non-Chinese words from word counts, for example.
+highly useful when searching for specific combinations of characters.
 
 Ubuntu and other distributions have a package (sqlite3-pcre) that can be
 loaded into the SQLite3 command line client to allow the REGEXP operator to
 work. Unfortunately, in some distributions it may not work with Unicode
 strings.
 
-After installing the sqlite3-pcre package, The command line client loads it by:
+In Ubuntu, after installing the sqlite3-pcre package, The command line client
+loads it by:
 
     sqlite> .load /usr/lib/sqlite3/pcre.so
 
@@ -224,10 +223,11 @@ D|D14|0002|6|Taoism|nx|w|2|317095
 D|D14|0003|7|Taoism|nx|w|2|317110
 ...
 
-Regular expression support for SQLite in Linux software is lacking. For example,
-the sqlite3-pcre package in Ubuntu uses the Perl Compiled Regular Expression
-library (libpcre). However, the libpcre package may not be compiled with Unicode
-support, making it useless for what it would be most effective for.
+Regular expression support *in combination with Unicode* in Linux software is
+lacking. For example, the sqlite3-pcre package in Ubuntu uses the Perl
+Compiled Regular Expression library (libpcre). However, the libpcre package
+may not be compiled with Unicode support, making it useless for what it would
+be most effective for.
 
     sqlite> select * from words where characters regexp '\x{4e00}';
 
