@@ -6,7 +6,7 @@ print """
 Simulation #3
 -------------
 An example starting from historical data from Anki. The settings in the Anki database
-query are specific to my settings: day 200 on deck 1371780570449.
+query are specific to my settings: currently at day 200 on deck 1371780570449.
 """
 
 deck = Deck()
@@ -14,6 +14,7 @@ deck.maxPerDay = 150
 
 #Windows-specific 
 dbfile = getenv('USERPROFILE') + "/Documents/Anki/User 1/collection.anki2"
+
 conn = sqlite3.connect(dbfile)
 cursor = conn.cursor()
 
@@ -49,7 +50,7 @@ for x in xrange(20):
 
 print """
 -------------
-b) Add 25 cards every 2 days, to see
+b) Add 25 cards every 2 days until reaching 2409 total cards, to see
 how the queue develops
 """
 
