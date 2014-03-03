@@ -20,7 +20,7 @@ print "Max cards per day: %d\n" % deck.maxPerDay
 for day in xrange(200):
 	for x in xrange( min(30, numToLearn - len(deck.cards()) )  ):
 		c = Card( deck.currentDay )
-		c.type = 'SIMULATED'
+		c.type = type
 		deck.appendCard( c )
 
 	deck.DoReviews(printSummary=True)
