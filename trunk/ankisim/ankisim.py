@@ -1,3 +1,25 @@
+"""
+A simulation of Anki's SRS scheduling in Python
+
+This file contains two object-oriented classes to simulate how Anki manages
+the scheduling of it's flashcards. The Card class defines a simulated card of
+a certain difficulty type, where each type has a defined matrix of transitions
+from a previous card start 0-4 to a new state 1-4. State 0 represents a new card,
+1 represents a lapsed card, and 2-4 represent the ease of answering the card --
+Hard (2), Good (3), or Easy (4). The Deck class maintains a collection of all these\
+cards, and simulates a daily session of answering all the cards that are due. Cards
+that are answered as Lapsed (1) are re-asked during the session. Cards that are due
+but not scheduled due to the daily limit are left on the queue as overdue cards. The
+rescheduling calculations are essentially the same as in the source code for Anki 2
+version 2.0.8
+
+@author Chad Redman
+@since 2014-03-03
+@version 1.0, 2014-03-03
+@link http://svn.zhtoolkit.com/small_utilities/trunk/ankisim/ Source	
+@license Free for any use
+"""
+
 import random
 
 class Card:
