@@ -39,6 +39,48 @@ class Card:
 			[ 0.0, 0.15, 0.25, 0.4, 0.2 ],
 			[ 0.0, 0.15, 0.2, 0.35, 0.3 ],
 			[ 0.0, 0.05, 0.15, 0.2, 0.6 ]],
+		'SIMULATED15': [
+			[ 0.0, 0.15, 0.25, 0.60, 0.0 ],
+			[ 0.0, 0.10, 0.90, 0.0, 0.0 ],  #lapsed
+			[ 0.0, 0.15, 0.25, 0.40, 0.2 ],
+			[ 0.0, 0.15, 0.2, 0.40, 0.25 ],
+			[ 0.0, 0.15, 0.10, 0.2, 0.55 ]],
+		'SIMULATED10': [
+			[ 0.0, 0.15, 0.25, 0.60, 0.0 ],
+			[ 0.0, 0.10, 0.90, 0.0, 0.0 ],  #lapsed
+			[ 0.0, 0.10, 0.25, 0.45, 0.2 ],
+			[ 0.0, 0.10, 0.2, 0.40, 0.3 ],
+			[ 0.0, 0.10, 0.10, 0.2, 0.6 ]],
+		'SIMULATED08': [
+			[ 0.0, 0.15, 0.25, 0.60, 0.0 ],
+			[ 0.0, 0.08, 0.92, 0.0, 0.0 ],  #lapsed
+			[ 0.0, 0.08, 0.25, 0.46, 0.21 ],
+			[ 0.0, 0.08, 0.2, 0.41, 0.31 ],
+			[ 0.0, 0.08, 0.10, 0.21, 0.61 ]],
+		'SIMULATED05': [
+			[ 0.0, 0.15, 0.25, 0.60, 0.0 ],
+			[ 0.0, 0.05, 0.95, 0.0, 0.0 ],  #lapsed
+			[ 0.0, 0.05, 0.25, 0.50, 0.2 ],
+			[ 0.0, 0.05, 0.2, 0.45, 0.3 ],
+			[ 0.0, 0.05, 0.10, 0.2, 0.65 ]],
+		'SIMULATED03': [
+			[ 0.0, 0.15, 0.25, 0.60, 0.0 ],
+			[ 0.0, 0.03, 0.97, 0.0, 0.0 ],  #lapsed
+			[ 0.0, 0.03, 0.26, 0.51, 0.2 ],
+			[ 0.0, 0.03, 0.2, 0.46, 0.31 ],
+			[ 0.0, 0.03, 0.10, 0.21, 0.66 ]],
+		'SIMULATED01': [
+			[ 0.0, 0.15, 0.25, 0.60, 0.0 ],
+			[ 0.0, 0.01, 0.99, 0.0, 0.0 ],  #lapsed
+			[ 0.0, 0.01, 0.26, 0.52, 0.21 ],
+			[ 0.0, 0.01, 0.2, 0.47, 0.32 ],
+			[ 0.0, 0.01, 0.10, 0.22, 0.67 ]],
+		'SIMULATED00': [
+			[ 0.0, 0.15, 0.25, 0.60, 0.0 ],
+			[ 0.0, 0.00, 0.97, 0.0, 0.0 ],  #lapsed
+			[ 0.0, 0.00, 0.26, 0.54, 0.2 ],
+			[ 0.0, 0.00, 0.2, 0.48, 0.32 ],
+			[ 0.0, 0.00, 0.10, 0.22, 0.68 ]],
 		'EASY': [
 			[ 0.0, 0.0,   0.0,   1.0, 0.0 ],
 			[ 0.0, 0.0,   0.1,   0.0,   0.0 ],  #lapsed
@@ -77,6 +119,7 @@ class Card:
 		self.answerLog = []
 		Card.gCardNum += 1
 		self.cardNum = Card.gCardNum
+		self.reschedule = None
 
 	def ToString(self):
 		return 'Card: {interval=%d, dueday=%d, isLapsed=%s, factor=%d}' % (self.interval, self.dueday, self.isLapsed, self.factor)
@@ -175,6 +218,8 @@ class Card:
 		new = ivl * Card.reviewIntervalFactor
 		return int(max(new, prev+1))
 
+	def __str__(self):
+		return "Card: interval,due	%d	%d" % (self.interval, self.dueday)
 
 
 
@@ -187,6 +232,7 @@ class Deck:
 		self.currentDay = 0
 		self._cards = []
 		self.rescheduleType = Deck.rescheduleTypes[0]
+		self.LogReschedules = False
 
 	def appendCard(self, card):
 		self._cards.append(card)
@@ -213,8 +259,12 @@ class Deck:
 			if r.ease < 2:
 				if r.isLapsed:
 					numLapsed += 1
+					if (self.LogReschedules):
+						r.reschedule = 'LAPSED'
 				else:
 					numRelearn += 1
+					if (self.LogReschedules):
+						r.reschedule = 'RELEARN'
 
 				if (self.rescheduleType == 'FailToEnd'):
 					toReview.append(r)
@@ -224,9 +274,30 @@ class Deck:
 					print 'Unknown reschedule type: %s' % self.rescheduleType
 			else:
 				numPassed += 1
-			
+				if (self.LogReschedules and not r.reschedule):
+					r.reschedule = 'RESCHEDULE'
 
 		if printSummary:
-			print "numReviewed:\tday\t%d\treviews\t%d\tscheduled\t%d\tpassed\t%d\tlapsed\t%d\trelearn\t%d\tcards in deck:\t%d" % (self.currentDay, numReviewed, numScheduled, numPassed, numLapsed, numRelearn, len(self._cards))
+			#print "numReviewed:\tday\t%d\treviews\t%d\tscheduled\t%d\tpassed\t%d\tlapsed\t%d\trelearn\t%d\tcards in deck:\t%d" % (self.currentDay, numReviewed, numScheduled, numPassed, numLapsed, numRelearn, len(self._cards))
+			stats = [self.currentDay, numReviewed, numScheduled, numPassed, numLapsed, numRelearn, len(self._cards)]
 
 		self.currentDay += 1
+
+		if printSummary:
+			return stats
+
+
+	def PrintForecast(self, days):
+		for day in range(0, days):
+			ct_y = len( [c for c in self._cards if not c.IsMature() and c.dueday == self.currentDay + day] )
+			ct_m = len( [c for c in self._cards if c.IsMature() and c.dueday == self.currentDay + day] )
+			print "%d\t%d\t%d\t%d" % (day, ct_y, ct_m, ct_y + ct_m)
+
+	def GetForecast(self, days):
+		ret = []
+		for day in range(0, days):
+			ret.append(  len([c for c in self._cards if c.dueday == self.currentDay + day])  )
+
+		return ret
+
+
